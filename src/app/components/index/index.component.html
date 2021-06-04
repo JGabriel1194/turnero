@@ -1,0 +1,75 @@
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-5" *ngIf='estudiantes.length == 0'>
+            <div class="text-center border border-light p-5" action="#!">
+                <p class="h4 mb-4">Elección de horaro de conducción</p>
+                <!-- Cédula -->
+                <input [(ngModel)]="cedula" type="text" class="form-control mb-4" size="10" maxlength="10"
+                    onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+                    name="username" placeholder="Cédula">
+                <!-- Botón de búsqueda -->
+                <button (click)="SearchCedula()" class="btn btn-primary btn-block my-4" type="submit">Buscar</button>
+            </div>
+        </div>
+        <div class="col-md-10" *ngIf='estudiantes.length > 0'>
+
+            <div class="card">
+                <div class="card-header">
+                    <p><strong>Estudiante: </strong>{{estudiantes[0].nombre}}</p>
+                    <p><strong>Licentia:</strong> Tipo {{estudiantes[0].licencia.tipo}} - {{estudiantes[0].licencia.estado}}</p>
+                    <p><strong>Fase:</strong> {{estudiantes[0].fase.fase_nombre}}</p>
+                </div>
+                <div class="card-body">
+                    <div class="text-center m-5">
+                        <div *ngIf="estudiantes[0].horario_id == null">
+                            <p class="h4 mb-4"  class="text-centered">Aún no registra un horario para condcución</p>
+                            <a class="btn btn-success me-2" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop"> Elegir Horario</a>
+                            <a class="btn btn-danger me-2" (click)="Salir()"> Salir</a>
+                        </div>
+                        <div *ngIf="estudiantes[0].horario_id != null">
+                            <span>Su Horario es el día <strong>{{estudiantes[0].horario.dia.dia_nombre}}</strong> de <strong>{{estudiantes[0].horario.hora.hora_inicio}}</strong></span>
+                            <br>
+                            <a class="btn btn-danger me-2" (click)="Salir()"> Salir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Seleccione su horario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="dia" class="form-label">Seleccione el día</label>
+                    <select class="form-select" name="dia_id" id="dia" #a (change)="DiaChange(a.value)" required>
+                        <option value="0">Elegir</option>
+                        <option *ngFor="let dia of dias" id="{{dia.id}}" value="{{dia.id}}">
+                            {{dia.dia_nombre}}</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="horario" class="form-label">Seleccione la hora</label>
+                    <select [(ngModel)]="hora" class="form-select" name="dia_id" id="dia" #a required>
+                        <option *ngIf="horarios.length == 0" value="">No existen horas disponibles</option>
+                        <option *ngFor="let horario of horarios" id="{{horario.id}}" value="{{horario.id}}">
+                            {{horario.hora.hora_inicio}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="GuardarHorario(estudiantes[0])">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
